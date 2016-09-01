@@ -5,6 +5,8 @@ board.on('ready', function () {
 
     const POMODOROS = 4;
 
+    const BUTTON = 2;
+
     // PWM leds
     const YELLOW1 = 3;
     const YELLOW2 = 5;
@@ -12,7 +14,7 @@ board.on('ready', function () {
     const YELLOW4 = 9;
 
     // digital leds
-    const GREEN1 = 2;
+    const GREEN1 = 8;
     const GREEN2 = 4;
     const GREEN3 = 7;
     const RED = 13;
@@ -34,10 +36,15 @@ board.on('ready', function () {
         RED
     ]);
 
+    let button = new five.Button(2);
+
+    let timer = 0;
+
     function finishPomodoro() {
         leds.map((led) => {
-            led.off();
+            led.stop().off();
         });
+        clearTimeout(timer);
     }
 
     function nextStep(index) {
@@ -54,7 +61,7 @@ board.on('ready', function () {
         leds[2 * index].fadeIn(WORK_DURATION);
 
         // break
-        board.wait(WORK_DURATION, function () {
+        timer = setTimeout(function () {
             leds[(2 * index) + 1].on();
 
             let break_duration = BREAK_DURATION;
@@ -63,11 +70,22 @@ board.on('ready', function () {
                 // big break on last pomodoro
                 break_duration = BIG_BREAK_DURATION;
             }
-            board.wait(break_duration, function () {
+
+            timer = setTimeout(function () {
                 execute(nextStep(index));
-            });
-        });
+            }, break_duration);
+
+        }, WORK_DURATION);
+
     }
+
+    button.on('down', function () {
+        finishPomodoro();
+
+        // restart
+        execute(0);
+    });
+
 
     // start
     execute(0);
