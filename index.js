@@ -1,4 +1,7 @@
+var express = require('express');
 var five = require('johnny-five');
+
+var app = express();
 var board = new five.Board();
 
 board.on('ready', function () {
@@ -92,7 +95,27 @@ board.on('ready', function () {
         execute(0);
     });
 
+    function start() {
+        finishPomodoro();
+        execute(0);
+    }
+    start();
 
-    // start
-    execute(0);
+    // app interface
+    board.finishPomodoro = finishPomodoro;
+    board.start = start;
+});
+
+app.listen(3000, function () {
+    console.log('App listening on port 3000.');
+});
+
+app.get('/finish', function (req, res) {
+    board.finishPomodoro();
+    res.send('finished');
+});
+
+app.get('/start', function (req, res) {
+    board.start();
+    res.send('started');
 });
