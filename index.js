@@ -3,6 +3,8 @@ var board = new five.Board();
 
 board.on('ready', function () {
 
+    const POMODOROS = 4;
+
     // PWM leds
     const YELLOW1 = 3;
     const YELLOW2 = 5;
@@ -32,53 +34,6 @@ board.on('ready', function () {
         RED
     ]);
 
-    // config steps
-    let step1 = {
-        work: {
-            led: leds[0],
-            duration: WORK_DURATION
-        },
-        break: {
-            led: leds[1],
-            duration: BREAK_DURATION
-        }
-    };
-
-    let step2 = {
-        work: {
-            led: leds[2],
-            duration: WORK_DURATION
-        },
-        break: {
-            led: leds[3],
-            duration: BREAK_DURATION
-        }
-    };
-
-    let step3 = {
-        work: {
-            led: leds[4],
-            duration: WORK_DURATION
-        },
-        break: {
-            led: leds[5],
-            duration: BREAK_DURATION
-        }
-    };
-
-    let step4 = {
-        work: {
-            led: leds[6],
-            duration: WORK_DURATION
-        },
-        break: {
-            led: leds[7],
-            duration: BIG_BREAK_DURATION
-        }
-    };
-
-    let steps = [step1, step2, step3, step4];
-
     function finishPomodoro() {
         leds.map((led) => {
             led.off();
@@ -87,7 +42,7 @@ board.on('ready', function () {
 
     function nextStep(index) {
         let next_step = index + 1;
-        if (next_step === steps.length) {
+        if (next_step === POMODOROS) {
             next_step = 0;
             finishPomodoro();
         }
@@ -95,15 +50,20 @@ board.on('ready', function () {
     }
 
     function execute(index) {
-        let step = steps[index];
-
         // start pomodoro
-        step.work.led.fadeIn(step.work.duration);
+        leds[2 * index].fadeIn(WORK_DURATION);
 
         // break
-        board.wait(step.work.duration, function () {
-            step.break.led.on();
-            board.wait(step.break.duration, function () {
+        board.wait(WORK_DURATION, function () {
+            leds[(2 * index) + 1].on();
+
+            let break_duration = BREAK_DURATION;
+
+            if ((index + 1) === POMODOROS) {
+                // big break on last pomodoro
+                break_duration = BIG_BREAK_DURATION;
+            }
+            board.wait(break_duration, function () {
                 execute(nextStep(index));
             });
         });
