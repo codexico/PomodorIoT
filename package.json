@@ -1,0 +1,27 @@
+{
+  "name": "pomodoriot",
+  "version": "0.0.1",
+  "description": "IoT controlled Pomodoro",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/codexico/PomodorIoT.git"
+  },
+  "keywords": [
+    "arduino",
+    "pomodoro",
+    "IoT"
+  ],
+  "author": "",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/codexico/PomodorIoT/issues"
+  },
+  "homepage": "https://github.com/codexico/PomodorIoT#readme",
+  "devDependencies": {
+    "johnny-five": "^0.10.0"
+  }
+}
