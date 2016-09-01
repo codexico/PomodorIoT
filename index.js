@@ -36,7 +36,7 @@ board.on('ready', function () {
         RED
     ]);
 
-    let button = new five.Button(2);
+    let button = new five.Button(BUTTON);
 
     let timer = 0;
 
