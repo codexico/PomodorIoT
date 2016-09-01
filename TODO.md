@@ -1,6 +1,6 @@
 # TODO
 
-- [ ] button to reset counter
+- [x] button to reset counter
 
 
 - [ ] detect user proximity
