@@ -56,27 +56,33 @@ board.on('ready', function () {
         return next_step;
     }
 
+    function takeABreak(index) {
+        let break_duration = BREAK_DURATION;
+
+        leds[(2 * index) + 1].on();
+
+        if ((index + 1) === POMODOROS) {
+            // big break on last pomodoro
+            break_duration = BIG_BREAK_DURATION;
+        }
+
+        timer = setTimeout(function () {
+            execute(nextStep(index));
+        }, break_duration);
+    }
+
+    function work(index) {
+        leds[2 * index].fadeIn(WORK_DURATION);
+    }
+
     function execute(index) {
         // start pomodoro
-        leds[2 * index].fadeIn(WORK_DURATION);
+        work(index);
 
         // break
         timer = setTimeout(function () {
-            leds[(2 * index) + 1].on();
-
-            let break_duration = BREAK_DURATION;
-
-            if ((index + 1) === POMODOROS) {
-                // big break on last pomodoro
-                break_duration = BIG_BREAK_DURATION;
-            }
-
-            timer = setTimeout(function () {
-                execute(nextStep(index));
-            }, break_duration);
-
+            takeABreak(index);
         }, WORK_DURATION);
-
     }
 
     button.on('down', function () {
