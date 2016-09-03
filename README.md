@@ -10,7 +10,13 @@ arduino controlled Pomodoro
 ## Run
 `` node index.js ``
 
-  It will start the pomodoro automatically.
+It will start the pomodoro automatically.
+
+Or use the Arduino IDE to run `` main/main.ino ``
+
+Or run it online:
+https://circuits.io/circuits/2651548-pomodoriot
+
 
 ## API
 
