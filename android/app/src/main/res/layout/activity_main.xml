@@ -7,19 +7,24 @@
     android:fitsSystemWindows="true"
     tools:context="fiap.com.br.pomodoroiot.MainActivity">
 
-    <android.support.design.widget.AppBarLayout
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:theme="@style/AppTheme.AppBarOverlay">
+        android:layout_height="70dp"
+        android:background="@color/colorPrimaryDark"
+        android:orientation="vertical"
+        android:id="@+id/customtitle">
 
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
-            app:popupTheme="@style/AppTheme.PopupOverlay" />
-
-    </android.support.design.widget.AppBarLayout>
+        <TextView android:id="@+id/titleText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingTop="20dp"
+            android:paddingBottom="20dp"
+            android:layout_gravity="center_horizontal"
+            android:text="@string/app_name"
+            android:textColor="@color/whiteText"
+            android:textSize="26sp"
+            android:textStyle="bold"/>
+    </LinearLayout>
 
     <include layout="@layout/content_main" />
 

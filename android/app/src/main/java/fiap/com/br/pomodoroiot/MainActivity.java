@@ -1,10 +1,13 @@
 package fiap.com.br.pomodoroiot;
 
+import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -13,6 +16,10 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.StyleSpan;
 import android.util.Log;
 import android.view.View;
 import android.view.Menu;
@@ -43,14 +50,13 @@ public class MainActivity extends AppCompatActivity {
     private BluetoothAdapter btAdapter;
     private OutputStream out;
     private boolean running = false;
+    ProgressDialog progress;
 
     private Switch switchControl;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
 
         btAdapter = BluetoothAdapter.getDefaultAdapter();
         if (btAdapter != null) {
@@ -66,7 +72,9 @@ public class MainActivity extends AppCompatActivity {
 
         final List<String> items = new ArrayList<String>();
         final List<BluetoothDevice> devices = new ArrayList<BluetoothDevice>();
+
         switchControl = (Switch) findViewById(R.id.swtPomodoro);
+        switchControl.setRotation(-90);
 
         Set<BluetoothDevice> pairedDevices = btAdapter.getBondedDevices();
         if (pairedDevices.size() > 0) {
@@ -88,6 +96,9 @@ public class MainActivity extends AppCompatActivity {
                 Selected_Device = item;
                 dialog.dismiss();
 
+                progress = ProgressDialog.show(MainActivity.this, "Carregando...",
+                        "Carregando", true);
+
                 BluetoothDevice device = devices.get(item);
                 BluetoothSocket socket = null;
 
@@ -98,9 +109,10 @@ public class MainActivity extends AppCompatActivity {
                     out = socket.getOutputStream();
                     out.write("1".getBytes());
 
+                    progress.dismiss();
                     running = true;
                     switchControl.setChecked(true);
-                    switchControl.setText("Desligar PomodorIoT");
+                    //switchControl.setText("Desligar PomodorIoT");
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -123,7 +135,7 @@ public class MainActivity extends AppCompatActivity {
                             e.printStackTrace();
                         }
                     }
-                    switchControl.setText("Desligar PomodorIoT");
+                    //switchControl.setText("Desligar PomodorIoT");
                 } else {
                     if (out != null && running == true) {
                         try {
@@ -133,7 +145,7 @@ public class MainActivity extends AppCompatActivity {
                             e.printStackTrace();
                         }
                     }
-                    switchControl.setText("Ligar PomodorIoT");
+                    //switchControl.setText("Ligar PomodorIoT");
                 }
 
             }
@@ -172,6 +184,31 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void applyStyle(CharSequence switchTxtOn, CharSequence switchTxtOff){
+        Spannable styleText = new SpannableString(switchTxtOn);
+        StyleSpan style = new StyleSpan(Typeface.BOLD);
+        styleText.setSpan(style, 0, switchTxtOn.length(), Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
+        styleText.setSpan(new ForegroundColorSpan(Color.GREEN), 0, switchTxtOn.length(), Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
+        switchControl.setTextOn(styleText);
+
+        styleText = new SpannableString(switchTxtOff);
+        styleText.setSpan(style, 0, switchTxtOff.length(), Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
+        styleText.setSpan(new ForegroundColorSpan(Color.RED), 0, switchTxtOff.length(), Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
+        switchControl.setTextOff(styleText);
+    }
+
+    public void togglestatehandler(View v){
+        Switch switchbtn = (Switch)v;
+        boolean isChecked = switchbtn.isChecked();
+
+        if(isChecked){
+            Toast.makeText(this, "INICIALIZADO", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, "PARADO", Toast.LENGTH_SHORT).show();
+        }
+
     }
 }
 

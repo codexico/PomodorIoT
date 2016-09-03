@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">PomodorIoT</string>
     <string name="action_settings">Settings</string>
+
+    <string name="checkedstate">START</string>
+    <string name="uncheckedstate">STOP</string>
 </resources>
