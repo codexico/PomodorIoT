@@ -43,40 +43,47 @@ void setup() {
   }
   
   pinMode(BUTTON, INPUT);
-  
-  Serial.begin(9600);  
+  Serial.begin(9600);
+}
+
+void _delay(unsigned long duration) {  
+ unsigned long start = millis();
+
+ while (millis() - start <= duration) {
+   checkButton();  // check the buttons 
+ }
+}
+
+void checkButton() {
+  buttonState = digitalRead(BUTTON);
+
+  if (buttonState == HIGH) {
+    Serial.println("HIGH");
+  } else {
+    Serial.println("LOW");
+  }
 }
 
 // put your main code here, to run repeatedly:
 void loop() {
-    // read the state of the pushbutton value:
-  buttonState = digitalRead(BUTTON);
-
-  // check if the pushbutton is pressed.
-  // if it is, the buttonState is HIGH:
-  if (buttonState == HIGH) {
-    Serial.println("buttonState = HIGH");
-  } else {
-    Serial.println("buttonState = LOW");
-  }
-
 
   for (int thisPin = 0; thisPin < 3; thisPin++) {
     digitalWrite(ledPins[thisPin * 2], HIGH);
-    delay(WORK_DURATION);
+    _delay(WORK_DURATION);
 
     digitalWrite(ledPins[(thisPin * 2) + 1], HIGH);
-    delay(BREAK_DURATION);
+    _delay(BREAK_DURATION);
   }
 
   digitalWrite(ledPins[6], HIGH);
-  delay(WORK_DURATION);
+  _delay(WORK_DURATION);
 
   digitalWrite(ledPins[7], HIGH);
-  delay(BREAK_DURATION);
+  _delay(BREAK_DURATION);
 
   for (int thisPin = 0; thisPin < pinCount; thisPin++) {
     digitalWrite(ledPins[thisPin], LOW);
   }
+  
 }
 
