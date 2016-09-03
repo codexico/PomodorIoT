@@ -16,8 +16,6 @@
     <Switch android:id="@+id/swtPomodoro"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textOn="@string/checkedstate"
-        android:textOff="@string/uncheckedstate"
         android:minWidth="25dp"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"

@@ -65,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
                 startActivityForResult(i, REQUEST_ENABLE_BT);
             }
         } else {
-            Toast.makeText(this, "Seu dispositivo não suporta bluetooth. Sorry =/",
+            Toast.makeText(this, R.string.your_device_does_not_support_bluetooth,
                     Toast.LENGTH_LONG).show();
             finish();
         }
@@ -90,32 +90,38 @@ public class MainActivity extends AppCompatActivity {
         }
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Selecione o dispositivo:");
+        builder.setTitle(getString(R.string.select_the_device));
         builder.setSingleChoiceItems(itemsCS, -1, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int item) {
+            public void onClick(DialogInterface dialog, final int item) {
                 Selected_Device = item;
                 dialog.dismiss();
 
-                progress = ProgressDialog.show(MainActivity.this, "Carregando...",
-                        "Carregando", true);
+                progress = ProgressDialog.show(MainActivity.this, "",
+                        getString(R.string.connecting), true);
 
-                BluetoothDevice device = devices.get(item);
-                BluetoothSocket socket = null;
+                new Thread(new Runnable() {
+                    public void run() {
+                        BluetoothDevice device = devices.get(item);
+                        BluetoothSocket socket = null;
 
-                try {
-                    socket = device.createInsecureRfcommSocketToServiceRecord(MY_UUID);
-                    socket.connect();
+                        try {
+                            socket = device.createInsecureRfcommSocketToServiceRecord(MY_UUID);
+                            socket.connect();
 
-                    out = socket.getOutputStream();
-                    out.write("1".getBytes());
+                            out = socket.getOutputStream();
+                            out.write("1".getBytes());
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
 
-                    progress.dismiss();
-                    running = true;
-                    switchControl.setChecked(true);
-                    //switchControl.setText("Desligar PomodorIoT");
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                        progress.dismiss();
+                        running = true;
+                        //switchControl.setText("Desligar PomodorIoT");
+                    }
+                }).start();
+
+
+                switchControl.setChecked(true);
             }
         });
         builder.show();
@@ -155,8 +161,10 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if(out != null){
+        if (out != null && running == true) {
             try {
+                out.write("0".getBytes());
+                running = false;
                 out.close();
             } catch (IOException e) {
                 e.printStackTrace();
@@ -204,9 +212,9 @@ public class MainActivity extends AppCompatActivity {
         boolean isChecked = switchbtn.isChecked();
 
         if(isChecked){
-            Toast.makeText(this, "INICIALIZADO", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.started, Toast.LENGTH_SHORT).show();
         } else {
-            Toast.makeText(this, "PARADO", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.stopped, Toast.LENGTH_SHORT).show();
         }
 
     }
